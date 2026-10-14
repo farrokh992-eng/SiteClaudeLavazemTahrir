@@ -1,4 +1,4 @@
-:root{--g1:#6B0F1F;--g2:#9B1B30;--g3:#C8324B;--blush:#F8ECEE;--gold:#C9A24B;--leaf:#2F6B4F;--bg:#FAF8F8;--line:#E8DCDF;--tx:#2A1A1E;--mut:#7A6A6E;--ok:#2F6B4F;--err:#B42318;--r:12px}
+:root{--g1:#145c3c;--g2:#19764d;--g3:#2c9a68;--blush:#edf7f0;--gold:#c6a45b;--leaf:#2f8058;--bg:#f6faf7;--line:#dce9df;--tx:#172b20;--mut:#62766a;--ok:#247449;--err:#b42318;--r:12px;--density:1}
 *{box-sizing:border-box;margin:0}
 html{scroll-behavior:smooth}
 body{font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--tx);line-height:1.85;padding-bottom:64px}
@@ -128,3 +128,39 @@ footer .cp{border-top:1px solid #ffffff22;margin-top:22px;padding-top:14px;font-
  footer .fg{grid-template-columns:1.4fr 1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* Narvan polish: compact surfaces, elm-green identity and accessible motion */
+body{animation:page-in .42s ease both}
+@keyframes page-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.hero{background:linear-gradient(125deg,#103f2b,#176b45 58%,#2b8c5d);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border:1px solid #ffffff20;border-radius:50%;left:8%;top:-110px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff06;pointer-events:none}
+.btn,.card,.box,.cat,.side,.pg{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.btn:active{transform:scale(.98)}
+.card:hover,.cat:hover{transform:translateY(-3px)}
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:12px 0 22px}
+.setting{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.setting small{display:block;color:var(--mut);font-size:.78rem;margin-top:3px}
+.setting input[type=checkbox]{width:21px;height:21px;accent-color:var(--g2);flex-shrink:0}
+.setting select{max-width:135px;padding:7px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--tx)}
+.notice{border:1px solid #c9e5d2;background:#effaf2;padding:12px 14px;border-radius:10px;margin:12px 0;color:#215b39}
+.density-compact .box,.density-compact .card{padding:10px}
+body.motion-off *,body.motion-off *:before,body.motion-off *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){body{animation:none!important}.btn,.card,.box,.cat,.side,.pg{transition:none!important}}
+
+/* Narvan polish: compact surfaces, elm-green identity and accessible motion */
+body{animation:page-in .42s ease both}
+@keyframes page-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.hero{background:linear-gradient(125deg,#103f2b,#176b45 58%,#2b8c5d);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border:1px solid #ffffff20;border-radius:50%;left:8%;top:-110px;box-shadow:0 0 0 28px #ffffff08,0 0 0 58px #ffffff06;pointer-events:none}
+.btn,.card,.box,.cat,.side,.pg{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.btn:active{transform:scale(.98)}
+.card:hover,.cat:hover{transform:translateY(-3px)}
+.settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:12px 0 22px}
+.setting{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.setting small{display:block;color:var(--mut);font-size:.78rem;margin-top:3px}
+.setting input[type=checkbox]{width:21px;height:21px;accent-color:var(--g2);flex-shrink:0}
+.setting select{max-width:135px;padding:7px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--tx)}
+.notice{border:1px solid #c9e5d2;background:#effaf2;padding:12px 14px;border-radius:10px;margin:12px 0;color:#215b39}
+.density-compact .box,.density-compact .card{padding:10px}
+body.motion-off *,body.motion-off *:before,body.motion-off *:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+@media(prefers-reduced-motion:reduce){body{animation:none!important}.btn,.card,.box,.cat,.side,.pg{transition:none!important}}

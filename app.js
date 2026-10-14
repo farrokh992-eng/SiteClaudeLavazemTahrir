@@ -3,7 +3,8 @@ const fa = n => Number(n).toLocaleString('fa-IR');
 const T = n => fa(n) + ' تومان';
 const en = s => String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } };
-const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true } catch { toast('فضای ذخیره‌سازی مرورگر در دسترس نیست'); return false } };
+const esc = v => String(v ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
 let cart = load('cart', {}), coupon = load('coupon', null), orders = load('orders', []), stockMap = load('stock', {});
 let F = {q: '', cat: -1, sort: 'pop', max: 0}, timer = null, shipSel = load('ship', 'post');
 const COUPONS = {NOTE20: ['۲۰٪ تخفیف', .2], WELCOME10: ['۱۰٪ تخفیف', .1]};
@@ -14,7 +15,12 @@ const SHIPS = {
   pickup: {name: 'تحویل حضوری', fee: 0, days: [0, 0], note: 'از فروشگاه — تهران، خیابان انقلاب (با هماهنگی)'}
 };
 const PROV = 'تهران,البرز,اصفهان,خراسان رضوی,فارس,آذربایجان شرقی,آذربایجان غربی,خوزستان,مازندران,گیلان,کرمان,قم,یزد,هرمزگان,کرمانشاه,همدان,مرکزی,زنجان,قزوین,لرستان,اردبیل,گلستان,سیستان و بلوچستان,کردستان,بوشهر,سمنان,ایلام,چهارمحال و بختیاری,خراسان شمالی,خراسان جنوبی,کهگیلویه و بویراحمد'.split(',');
-const SITE={name:'نارون',phone:'۰۲۱-۰۰۰۰۰۰۰۰',email:'info@naroon.example',addr:'تهران، خیابان نمونه، پلاک ۰ (آدرس واقعی را در app.js تنظیم کنید)',hours:'شنبه تا پنجشنبه، ۹ تا ۱۸'};
+const SITE={name:'نارون',english:'Elm',phone:'',email:'',addr:'',hours:'شنبه تا پنجشنبه، ۹ تا ۱۸'};
+const PREFKEY='narvan_prefs';
+let prefs=load(PREFKEY,{compact:false,motion:true,confirmClear:true});
+function applyPrefs(){document.body.classList.toggle('density-compact',!!prefs.compact);document.body.classList.toggle('motion-off',!prefs.motion)}
+function settingsView(){app.innerHTML=`<div class="crumb"><a href="#/">خانه</a> › تنظیمات</div><section class="pg"><h1>تنظیمات نارون</h1><p class="meta">ظاهر و رفتار فروشگاه را مطابق سلیقه‌ات تنظیم کن. این گزینه‌ها فقط روی همین مرورگر ذخیره می‌شوند.</p><div class="settings-grid"><label class="setting"><span><b>چیدمان جمع‌وجور</b><small>فاصله‌ها و کارت‌ها کوچک‌تر می‌شوند.</small></span><input id="prefCompact" type="checkbox" ${prefs.compact?'checked':''}></label><label class="setting"><span><b>انیمیشن‌ها</b><small>حرکت‌های ظریف ورود و تعامل.</small></span><input id="prefMotion" type="checkbox" ${prefs.motion?'checked':''}></label></div><h2>حریم خصوصی و امنیت</h2><div class="notice">اطلاعات سفارش و سبد خرید در حافظهٔ همین مرورگر ذخیره می‌شود؛ پاک‌کردن داده‌های سایت ممکن است آن‌ها را حذف کند. در این نسخه هیچ سرور یا درگاه بانکی واقعی متصل نیست.</div><div class="settings-grid"><div class="setting"><span><b>پاک‌سازی سبد خرید</b><small>فقط اقلام فعلی سبد حذف می‌شوند.</small></span><button class="btn sm alt" id="clearCart">پاک‌سازی</button></div><div class="setting"><span><b>پاک‌سازی اطلاعات محلی</b><small>سبد، علاقه‌مندی‌ها و اطلاعات ذخیره‌شدهٔ این سایت حذف می‌شوند.</small></span><button class="btn sm alt" id="clearLocal">پاک‌سازی داده‌ها</button></div></div><h2>دربارهٔ نارون</h2><p>نارون (Elm)؛ فروشگاه لوازم تحریر و نوشت‌افزار با هویت بصری الهام‌گرفته از رنگ سبز و درخت نارون.</p></section>`;}
+
 const MARK=(s=40,cr='#8A0F22')=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 17c6-5 13-3 14 3-5 4-11 4-14-3z" fill="#3F8F63"/><path d="M32 19c-14 0-22 9-22 20s9 19 22 19 22-8 22-19-8-20-22-20z" fill="#A3152B"/><path d="M32 19c-14 0-22 9-22 20 0 3 1 6 3 9 4-14 18-24 34-24-4-3-9-5-15-5z" fill="#D8435A" opacity=".5"/><path d="M24 21L23 10l6 6 3-9 3 9 6-6-1 11z" fill="${cr}"/><circle cx="26" cy="38" r="2.3" fill="#F4B6C0"/><circle cx="33" cy="45" r="2.3" fill="#F4B6C0"/><circle cx="41" cy="37" r="2.3" fill="#F4B6C0"/><circle cx="35" cy="33" r="2" fill="#F4B6C0" opacity=".7"/></svg>`;
 const TAB=(p)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 const P = id => PRODUCTS.find(p => p.id === +id);
@@ -109,13 +115,13 @@ function checkout(){
   if(!Object.keys(cart).length){location.hash='#/cart';return}
   const u=load('user',{prov:'تهران'});
   app.innerHTML=`${steps(2)}<div class="lay"><form id="co" novalidate><div class="box"><h2 style="margin-top:0">اطلاعات گیرنده</h2>
-  <div class="two"><div><label for="f1">نام و نام خانوادگی</label><input id="f1" name="name" autocomplete="name" value="${u.name||''}"><div class="err"></div></div>
-  <div><label for="f2">شمارهٔ موبایل</label><input id="f2" name="phone" dir="ltr" inputmode="numeric" placeholder="09123456789" autocomplete="tel" value="${u.phone||''}"><div class="err"></div></div>
+  <div class="two"><div><label for="f1">نام و نام خانوادگی</label><input id="f1" name="name" autocomplete="name" value="${esc(u.name||'')}"><div class="err"></div></div>
+  <div><label for="f2">شمارهٔ موبایل</label><input id="f2" name="phone" dir="ltr" inputmode="numeric" placeholder="09123456789" autocomplete="tel" value="${esc(u.phone||'')}"><div class="err"></div></div>
   <div><label for="f3">استان</label><select id="f3" name="prov">${PROV.map(x=>`<option ${x===u.prov?'selected':''}>${x}</option>`).join('')}</select><div class="err"></div></div>
-  <div><label for="f4">شهر</label><input id="f4" name="city" autocomplete="address-level2" value="${u.city||''}"><div class="err"></div></div>
-  <div><label for="f5">کد پستی (۱۰ رقم)</label><input id="f5" name="zip" dir="ltr" inputmode="numeric" maxlength="10" value="${u.zip||''}"><div class="err"></div></div>
-  <div><label for="f6">پلاک / واحد (اختیاری)</label><input id="f6" name="unit" value="${u.unit||''}"><div class="err"></div></div></div>
-  <label for="f7">نشانی کامل (خیابان، کوچه)</label><textarea id="f7" name="addr" rows="3" autocomplete="street-address">${u.addr||''}</textarea><div class="err"></div></div>
+  <div><label for="f4">شهر</label><input id="f4" name="city" autocomplete="address-level2" value="${esc(u.city||'')}"><div class="err"></div></div>
+  <div><label for="f5">کد پستی (۱۰ رقم)</label><input id="f5" name="zip" dir="ltr" inputmode="numeric" maxlength="10" value="${esc(u.zip||'')}"><div class="err"></div></div>
+  <div><label for="f6">پلاک / واحد (اختیاری)</label><input id="f6" name="unit" value="${esc(u.unit||'')}"><div class="err"></div></div></div>
+  <label for="f7">نشانی کامل (خیابان، کوچه)</label><textarea id="f7" name="addr" rows="3" autocomplete="street-address">${esc(u.addr||'')}</textarea><div class="err"></div></div>
   <div class="box"><h2 style="margin-top:0">روش ارسال</h2><div id="so">${shipOpts(u.prov)}</div></div>
   <div class="box"><h2 style="margin-top:0">روش پرداخت</h2>
   <label class="opt"><input type="radio" name="pay" value="online" checked><span>پرداخت آنلاین (درگاه آزمایشی)<small>پرداخت با کارت بانکی، بدون هزینهٔ اضافه</small></span></label>
@@ -201,7 +207,7 @@ function layout(){
   $('#strip').textContent=`ارسال رایگان پست برای خرید بالای ${T(FREE_SHIP)}`;
   $('#lg').innerHTML=`${MARK(42)}<span><b>${SITE.name}</b><small>فروشگاه لوازم تحریر</small></span>`;
   const I={h:'<path d="M4 11l8-7 8 7v9H4z"/>',s:'<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',c:'<path d="M5 8h14l-1 12H6zM9 8a3 3 0 016 0"/>',o:'<path d="M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8"/>'};
-  $('#tabs').innerHTML=`<a href="#/" data-t="">${TAB(I.h)}خانه</a><a href="#/shop" data-t="shop">${TAB(I.s)}فروشگاه</a><a href="#/cart" data-t="cart"><i>${TAB(I.c)}<b class="bd">۰</b></i>سبد خرید</a><a href="#/orders" data-t="orders">${TAB(I.o)}سفارش‌ها</a>`;
+  $('#tabs').innerHTML=`<a href="#/" data-t="">${TAB(I.h)}خانه</a><a href="#/shop" data-t="shop">${TAB(I.s)}فروشگاه</a><a href="#/cart" data-t="cart"><i>${TAB(I.c)}<b class="bd">۰</b></i>سبد خرید</a><a href="#/settings" data-t="settings">⚙ تنظیمات</a>`;
   $('#ft').innerHTML=`<div class="wrap"><div class="fg"><div><div style="display:flex;gap:10px;align-items:center">${MARK(40,'#D9B25F')}<h4 style="margin:0;font-size:1.6rem">${SITE.name}</h4></div><p style="margin-top:8px;max-width:340px">فروشگاه آنلاین لوازم تحریر؛ کیفیت، قیمت شفاف و ارسال مطمئن.</p></div>
   <div><h4>راهنمای خرید</h4><a href="#/page/shipping">ارسال و هزینه‌ها</a><a href="#/page/returns">شرایط بازگشت کالا</a><a href="#/page/faq">پرسش‌های متداول</a><a href="#/orders">پیگیری سفارش</a></div>
   <div><h4>ارتباط با ما</h4><a href="#/page/about">دربارهٔ ما</a><a href="#/page/contact">تماس با ما</a><span>${SITE.phone}</span></div></div>
@@ -213,7 +219,7 @@ function notfound(){app.innerHTML=`<div class="empty"><h2 style="justify-content
 function route(){
   clearInterval(timer);
   const [path,qs]=(location.hash.slice(1)||'/').split('?'),[,pg,arg]=path.split('/');
-  const m={'':home,shop:()=>shop(qs),product:()=>product(arg),cart:cartView,checkout,success:()=>success(arg),orders:ordersView,pay:()=>gateway(arg),page:()=>page(arg),failed:()=>failed(arg)};
+  const m={'':home,settings:settingsView,shop:()=>shop(qs),product:()=>product(arg),cart:cartView,checkout,success:()=>success(arg),orders:ordersView,pay:()=>gateway(arg),page:()=>page(arg),failed:()=>failed(arg)};
   (m[pg||'']||notfound)();window.scrollTo(0,0);
   document.querySelectorAll('[data-t]').forEach(a=>a.classList.toggle('on',a.dataset.t===(pg||'')||(pg==='product'&&a.dataset.t==='shop')));
 }
@@ -248,4 +254,6 @@ document.addEventListener('submit',e=>{
 });
 document.addEventListener('submit',e=>{if(e.target.id==='ct'){e.preventDefault();const f=e.target;if(f.m.value.trim().length<5){$('#cte').textContent='پیام را کامل‌تر بنویسید';return}
   const m=load('msgs',[]);m.push({n:f.n.value,m:f.m.value,d:Date.now()});save('msgs',m);f.reset();$('#cte').textContent='';toast('پیام شما ثبت شد')}});
-window.addEventListener('hashchange',route);layout();route();
+document.addEventListener('change',e=>{if(e.target.id==='prefCompact'){prefs.compact=e.target.checked;save(PREFKEY,prefs);applyPrefs()}if(e.target.id==='prefMotion'){prefs.motion=e.target.checked;save(PREFKEY,prefs);applyPrefs()}});
+document.addEventListener('click',e=>{if(e.target.id==='clearCart'){cart={};commit();toast('سبد خرید پاک شد');settingsView()}if(e.target.id==='clearLocal'){if(confirm('همهٔ داده‌های محلی نارون در این مرورگر حذف شود؟')){['cart','coupon','orders','stock','user','ship','msgs',PREFKEY].forEach(k=>localStorage.removeItem(k));cart={};coupon=null;orders=[];stockMap={};prefs={compact:false,motion:true,confirmClear:true};applyPrefs();commit();toast('داده‌های محلی پاک شد');settingsView()}}});
+window.addEventListener('hashchange',route);layout();applyPrefs();route();
