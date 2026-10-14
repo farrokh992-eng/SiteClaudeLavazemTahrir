@@ -13,18 +13,16 @@
 <header class="top">
   <div class="wrap bar">
     <a class="logo" href="#/">خط‌کش<small>لوازم تحریر</small></a>
-    <nav>
-      <a href="#/">خانه</a>
-      <a href="#/shop">فروشگاه</a>
-      <a href="#/orders">سفارش‌ها</a>
-    </nav>
-    <a class="cartbtn" href="#/cart" aria-label="سبد خرید">🛒 <span id="badge">۰</span></a>
+    <form id="hs" class="hsearch" role="search"><input aria-label="جست‌وجو" placeholder="جست‌وجو: دفتر، خودکار، مداد..."></form>
+    <nav class="dnav"><a href="#/" data-t="">خانه</a><a href="#/shop" data-t="shop">فروشگاه</a><a href="#/orders" data-t="orders">سفارش‌ها</a></nav>
+    <a class="cartbtn" href="#/cart" aria-label="سبد خرید">🛒<span class="lbl"> سبد خرید</span> <b class="bd">۰</b></a>
   </div>
 </header>
 <main id="app" class="wrap"></main>
 <footer>
-  <div class="wrap">© خط‌کش — فروشگاه نمونهٔ لوازم تحریر · پرداخت و ارسال در این نسخه شبیه‌سازی شده است</div>
+  <div class="wrap">© خط‌کش — فروشگاه لوازم تحریر · نسخهٔ آزمایشی: درگاه پرداخت و ارسال شبیه‌سازی شده‌اند</div>
 </footer>
+<nav class="tabs" aria-label="منوی اصلی"><a href="#/" data-t=""><i>🏠</i>خانه</a><a href="#/shop" data-t="shop"><i>🗂️</i>فروشگاه</a><a href="#/cart" data-t="cart"><i>🛒<b class="bd">۰</b></i>سبد</a><a href="#/orders" data-t="orders"><i>📦</i>سفارش‌ها</a></nav>
 <div id="toast" role="status"></div>
 <script src="products.js"></script>
 <script src="app.js"></script>
