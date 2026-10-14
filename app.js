@@ -14,9 +14,12 @@ const SHIPS = {
   pickup: {name: 'تحویل حضوری', fee: 0, days: [0, 0], note: 'از فروشگاه — تهران، خیابان انقلاب (با هماهنگی)'}
 };
 const PROV = 'تهران,البرز,اصفهان,خراسان رضوی,فارس,آذربایجان شرقی,آذربایجان غربی,خوزستان,مازندران,گیلان,کرمان,قم,یزد,هرمزگان,کرمانشاه,همدان,مرکزی,زنجان,قزوین,لرستان,اردبیل,گلستان,سیستان و بلوچستان,کردستان,بوشهر,سمنان,ایلام,چهارمحال و بختیاری,خراسان شمالی,خراسان جنوبی,کهگیلویه و بویراحمد'.split(',');
+const SITE={name:'نارون',phone:'۰۲۱-۰۰۰۰۰۰۰۰',email:'info@naroon.example',addr:'تهران، خیابان نمونه، پلاک ۰ (آدرس واقعی را در app.js تنظیم کنید)',hours:'شنبه تا پنجشنبه، ۹ تا ۱۸'};
+const MARK=(s=40,cr='#8A0F22')=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 17c6-5 13-3 14 3-5 4-11 4-14-3z" fill="#3F8F63"/><path d="M32 19c-14 0-22 9-22 20s9 19 22 19 22-8 22-19-8-20-22-20z" fill="#A3152B"/><path d="M32 19c-14 0-22 9-22 20 0 3 1 6 3 9 4-14 18-24 34-24-4-3-9-5-15-5z" fill="#D8435A" opacity=".5"/><path d="M24 21L23 10l6 6 3-9 3 9 6-6-1 11z" fill="${cr}"/><circle cx="26" cy="38" r="2.3" fill="#F4B6C0"/><circle cx="33" cy="45" r="2.3" fill="#F4B6C0"/><circle cx="41" cy="37" r="2.3" fill="#F4B6C0"/><circle cx="35" cy="33" r="2" fill="#F4B6C0" opacity=".7"/></svg>`;
+const TAB=(p)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 const P = id => PRODUCTS.find(p => p.id === +id);
 const stock = id => stockMap[id] ?? P(id).stock;
-const pic = (p, cls = '') => `<div class="pic ${cls}" style="background:${p.bg}"><svg viewBox="0 0 100 100" aria-hidden="true">${ART[p.art](p.c)}</svg><img src="images/p${p.id}.jpg" alt="${p.name}" loading="lazy" onerror="this.remove()"></div>`;
+const pic = (p, cls = '') => `<div class="pic ${cls}"><svg viewBox="0 0 100 100" aria-hidden="true">${ART[p.art](p.c)}</svg><img src="images/p${p.id}.jpg" alt="${p.name}" loading="lazy" onerror="this.remove()"></div>`;
 const when = d => { const x = new Date(Date.now() + d * 864e5); return x.toLocaleDateString('fa-IR', {weekday: 'long', day: 'numeric', month: 'long'}) };
 const eta = m => { const [a, b] = SHIPS[m].days; return a === 0 && b === 0 ? 'آماده در ۲۴ ساعت' : a === 0 ? 'تحویل: امروز تا فردا' : `تحویل: ${when(a)} تا ${when(b)}` };
 
@@ -37,14 +40,13 @@ const card=p=>`<a class="card" href="#/product/${p.id}">${p.old?`<span class="ta
 
 function home(){
   const top=[...PRODUCTS].sort((a,b)=>b.reviews-a.reviews).slice(0,4), sale=PRODUCTS.filter(p=>p.old);
-  app.innerHTML=`<section class="hero"><div><h1>همهٔ لوازم تحریر، <mark>یک‌جا</mark> و با قیمت منصفانه</h1>
-  <p>دفتر، خودکار، ماژیک و کیف مدرسه. ارسال رایگان بالای ${T(FREE_SHIP)}.</p>
-  <a class="btn" href="#/shop">مشاهدهٔ محصولات</a></div>
-  <div class="art">${['book','colors','bag'].slice(0,2).map((k,i)=>`<div style="background:${['#E6ECFF','#E9E2FF'][i]}"><svg viewBox="0 0 100 100">${ART[k](['#2F54EB','#7C5CFF'][i])}</svg></div>`).join('')}</div></section>
-  <div class="trust"><div><b>🚚 ارسال سریع</b>پیک تهران، پست پیشتاز کشور</div><div><b>🎟️ کد WELCOME10</b>۱۰٪ تخفیف اولین خرید</div><div><b>🔒 پرداخت امن</b>درگاه آنلاین یا پرداخت در محل</div><div><b>↩️ بازگشت کالا</b>تا ۷ روز، بدون سؤال</div></div>
-  <h2>دسته‌بندی‌ها</h2><div class="cats">${CATS.map((c,i)=>`<a class="cat" href="#/shop?cat=${i}">${c}</a>`).join('')}</div>
-  <h2>پرفروش‌ترین‌ها <a href="#/shop">همه محصولات</a></h2><div class="grid">${top.map(card).join('')}</div>
-  ${sale.length?`<h2>تخفیف‌دارها</h2><div class="grid">${sale.map(card).join('')}</div>`:''}`;
+  app.innerHTML=`<section class="hero"><div><h1>لوازم تحریر برگزیده برای کار و درس هر روز</h1>
+  <p>دفتر، قلم، رنگ و لوازم اداری با ضمانت اصالت کالا و ارسال به سراسر کشور.</p>
+  <div class="hb"><a class="btn gold" href="#/shop">مشاهدهٔ محصولات</a><a class="btn ghost" href="#/shop?cat=0">دفترها و کاغذ</a></div></div><div class="hm">${MARK(230,'#D9B25F')}</div></section>
+  <div class="trust"><div><b>ارسال به سراسر کشور</b>پست پیشتاز و پیک تهران</div><div><b>پرداخت امن</b>آنلاین یا در محل تحویل</div><div><b>ضمانت بازگشت</b>تا ۷ روز پس از تحویل</div><div><b>پشتیبانی</b>${SITE.hours}</div></div>
+  <h2 class="sh">دسته‌بندی‌ها</h2><div class="cats">${CATS.map((c,i)=>`<a class="cat" href="#/shop?cat=${i}">${c}</a>`).join('')}</div>
+  <h2 class="sh">پرفروش‌ترین‌ها <a href="#/shop">همهٔ محصولات</a></h2><div class="grid">${top.map(card).join('')}</div>
+  ${sale.length?`<h2 class="sh">پیشنهاد ویژه</h2><div class="grid">${sale.map(card).join('')}</div>`:''}`;
 }
 function list(){
   let r=PRODUCTS.filter(p=>(F.cat<0||p.cat===F.cat)&&p.name.includes(F.q.trim())&&(!F.max||p.price<=F.max));
@@ -71,20 +73,20 @@ function product(id){
   <p style="margin:12px 0">${p.desc}</p>
   <div class="price" style="font-size:1.4rem">${p.old?`<s>${T(p.old)}</s>`:''}${T(p.price)}</div>
   <p class="${s<10?'':'ok'}" style="margin:6px 0">${s<1?'ناموجود':s<10?`فقط ${fa(s)} عدد باقی مانده`:'موجود در انبار'}</p>
-  <ul class="perks"><li>🚚 ${eta('post')}</li><li>🎁 ارسال رایگان برای خرید بالای ${T(FREE_SHIP)}</li><li>↩️ ۷ روز ضمانت بازگشت</li></ul></div></div>
+  <ul class="perks"><li>${eta('post')}</li><li>ارسال رایگان پست برای خرید بالای ${T(FREE_SHIP)}</li><li>۷ روز ضمانت بازگشت</li></ul></div></div>
   <div class="buy"><div class="qty"><button data-d="-1" aria-label="کمتر">−</button><span id="n" data-v="1">۱</span><button data-d="1" aria-label="بیشتر">+</button></div>
   <button class="btn" data-addn="${p.id}" ${s<1?'disabled':''}>افزودن به سبد</button><button class="btn go" data-buy="${p.id}" ${s<1?'disabled':''}>خرید سریع</button></div>
   ${rel.length?`<h2>محصولات مشابه</h2><div class="grid">${rel.map(card).join('')}</div>`:''}<div style="height:70px"></div>`;
 }
 function cartView(){
   const ids=Object.keys(cart);
-  if(!ids.length){app.innerHTML=`<div class="empty"><div style="font-size:3rem">🛒</div><p>سبد خرید شما خالی است.</p><br><a class="btn" href="#/shop">شروع خرید</a></div>`;return}
+  if(!ids.length){app.innerHTML=`<div class="empty"><p>سبد خرید شما خالی است.</p><br><a class="btn" href="#/shop">شروع خرید</a></div>`;return}
   const t=totals(),left=Math.max(0,FREE_SHIP-t.base);
   app.innerHTML=`<div class="steps"><span class="on">۱. سبد خرید</span><span>۲. ارسال و پرداخت</span><span>۳. تأیید</span></div><div class="lay"><div class="box">${ids.map(id=>{const p=P(id);return `<div class="row">
    ${pic(p,'ic')}<div class="nm"><a href="#/product/${id}"><b>${p.name}</b></a><div class="meta">${T(p.price)}</div></div>
    <div class="ctl"><div class="qty"><button data-dec="${id}" aria-label="کمتر">−</button><span>${fa(cart[id])}</span><button data-inc="${id}" aria-label="بیشتر">+</button></div>
    <b>${T(p.price*cart[id])}</b><button class="chip" data-del="${id}" aria-label="حذف ${p.name}">حذف</button></div></div>`}).join('')}</div>
-  <div class="box sum"><div class="meta" style="display:block">${left?`${T(left)} دیگر تا ارسال رایگان پست`:'🎉 ارسال پست برای شما رایگان است'}</div><div class="bar2"><i style="width:${Math.min(100,t.base/FREE_SHIP*100)}%"></i></div>
+  <div class="box sum"><div class="meta" style="display:block">${left?`${T(left)} دیگر تا ارسال رایگان پست`:'ارسال پست برای سفارش شما رایگان است'}</div><div class="bar2"><i style="width:${Math.min(100,t.base/FREE_SHIP*100)}%"></i></div>
   <label>کد تخفیف</label><div style="display:flex;gap:8px"><input id="cp" placeholder="NOTE20" value="${coupon||''}" dir="ltr"><button class="btn sm" id="applycp">اعمال</button></div>
   <div class="err" id="cperr">${coupon&&COUPONS[coupon]?`<span class="ok">${COUPONS[coupon][0]} اعمال شد</span>`:''}</div>
   <div><span>جمع کالاها</span><span>${T(t.sub)}</span></div>${t.disc?`<div class="ok"><span>تخفیف</span><span>−${T(t.disc)}</span></div>`:''}
@@ -118,7 +120,7 @@ function checkout(){
   <div class="box"><h2 style="margin-top:0">روش پرداخت</h2>
   <label class="opt"><input type="radio" name="pay" value="online" checked><span>پرداخت آنلاین (درگاه آزمایشی)<small>پرداخت با کارت بانکی، بدون هزینهٔ اضافه</small></span></label>
   <label class="opt"><input type="radio" name="pay" value="cod"><span>پرداخت در محل<small>هنگام تحویل کالا</small></span></label></div>
-  <button class="btn big go">ثبت سفارش و ادامه</button></form>
+  <label class="opt"><input type="checkbox" name="terms"><span>قوانین خرید و شرایط بازگشت کالا را می‌پذیرم.<small><a href="#/page/returns" style="color:var(--g2)">مطالعهٔ شرایط بازگشت</a></small></span></label><div class="err"></div><button class="btn big go">ثبت سفارش و ادامه</button></form>
   <div class="box sum" style="position:sticky;top:84px"><h2 style="margin-top:0">خلاصهٔ سفارش</h2><div id="sm">${sumHTML()}</div></div></div>`;
 }
 function place(form){
@@ -127,7 +129,9 @@ function place(form){
   const R=[['name',v=>v.trim().split(/\s+/).length>=2&&v.trim().length>=5||'نام و نام خانوادگی را کامل بنویسید'],['phone',v=>/^09\d{9}$/.test(v)||'شماره باید مثل 09123456789 باشد'],
    ['prov',v=>!!v||'استان را انتخاب کنید'],['city',v=>v.trim().length>=2||'شهر را وارد کنید'],['zip',v=>/^\d{10}$/.test(v)||'کد پستی باید ۱۰ رقم باشد'],['unit',()=>true],['addr',v=>v.trim().length>=10||'نشانی را کامل‌تر بنویسید']];
   R.forEach(([k,f],i)=>{const r=f(d[k]);if(errs[i])errs[i].textContent=r===true?'':r;if(r!==true)bad++});
+  if(!d.terms){errs[7].textContent='برای ادامه، پذیرش قوانین لازم است';bad++}
   if(bad){const e=form.querySelector('.err:not(:empty)');e&&e.previousElementSibling.focus();toast('لطفاً خطاهای فرم را اصلاح کنید');return}
+  const lack=Object.keys(cart).find(id=>cart[id]>stock(id));if(lack){toast(`موجودی «${P(lack).name}» کافی نیست`);return}
   if(SHIPS[d.ship].only&&d.prov!==SHIPS[d.ship].only){toast('این روش ارسال برای استان شما فعال نیست');return}
   shipSel=d.ship;save('ship',d.ship);save('user',d);
   const t=totals(d.ship),code='KH-'+Math.random().toString(36).slice(2,8).toUpperCase();
@@ -142,8 +146,8 @@ function finish(o){
 function gateway(code){
   const o=orders.find(x=>x.code===code);if(!o||o.state==='paid')return notfound();
   let left=600;
-  app.innerHTML=`<div class="gw"><div class="hd"><span>🏦 درگاه پرداخت آزمایشی</span><span id="tm" dir="ltr">۱۰:۰۰</span></div>
-  <div class="test">⚠️ حالت تست: هیچ پولی برداشت نمی‌شود. اطلاعات کارت به‌صورت نمونه پر شده است.</div>
+  app.innerHTML=`<div class="gw"><div class="hd"><span>درگاه پرداخت آزمایشی</span><span id="tm" dir="ltr">۱۰:۰۰</span></div>
+  <div class="test">حالت تست: هیچ پولی برداشت نمی‌شود. اطلاعات کارت به‌صورت نمونه پر شده است.</div>
   <form class="bd2" id="gwf" novalidate><div class="amt"><span>پذیرنده: فروشگاه خط‌کش</span><b>${T(o.t.total)}</b></div>
   <label>شمارهٔ کارت</label><input name="card" class="ltr" inputmode="numeric" maxlength="19" value="6037 9911 1111 1111"><div class="err"></div>
   <div class="two"><div><label>CVV2</label><input name="cvv" class="ltr" inputmode="numeric" maxlength="4" value="123"><div class="err"></div></div>
@@ -166,12 +170,12 @@ function payForm(f){
 }
 function success(code){
   const o=orders.find(x=>x.code===code);if(!o)return notfound();
-  app.innerHTML=`${steps(3)}<div class="box empty"><div style="font-size:3.4rem">✅</div><h2 style="justify-content:center">سفارش شما ثبت شد</h2>
+  app.innerHTML=`${steps(3)}<div class="box empty"><div class="seal">✓</div><h2 style="justify-content:center">سفارش شما ثبت شد</h2>
   <p>کد پیگیری: <b dir="ltr">${o.code}</b></p>${o.ref?`<p>شمارهٔ مرجع تراکنش (آزمایشی): <b dir="ltr">${o.ref}</b></p>`:'<p>پرداخت هنگام تحویل انجام می‌شود.</p>'}
   <p>${SHIPS[o.ship].name} · ${eta(o.ship)}</p><p class="meta">${o.addr}</p><br><a class="btn" href="#/orders">پیگیری سفارش</a> <a class="btn alt" href="#/shop">ادامه خرید</a></div>`;
 }
 function failed(code){
-  app.innerHTML=`<div class="box empty"><div style="font-size:3.4rem">❌</div><h2 style="justify-content:center">پرداخت ناموفق بود</h2><p>${sessionStorage.getItem('fail')||''}</p>
+  app.innerHTML=`<div class="box empty"><div class="seal x">✕</div><h2 style="justify-content:center">پرداخت ناموفق بود</h2><p>${sessionStorage.getItem('fail')||''}</p>
   <p class="meta">سفارش شما حفظ شده و سبد خرید پاک نشده است. می‌توانید دوباره پرداخت کنید.</p><br><a class="btn" href="#/pay/${code}">تلاش مجدد پرداخت</a> <a class="btn alt" href="#/cart">بازگشت به سبد</a></div>`;
 }
 function ordersView(){
@@ -184,12 +188,32 @@ function ordersView(){
     ${ok?'':`<div style="margin-top:8px"><a class="btn sm" href="#/pay/${o.code}">پرداخت</a></div>`}</div>`}).join('')
    :`<div class="empty">هنوز سفارشی ثبت نکرده‌اید.<br><br><a class="btn" href="#/shop">شروع خرید</a></div>`);
 }
+const PAGES={
+ about:['دربارهٔ نارون',`<p>نارون یک فروشگاه آنلاین لوازم تحریر است که با انتخاب دقیق کالا، قیمت شفاف و ارسال مطمئن، خرید روزمرهٔ دانش‌آموزان، دانشجویان و محیط‌های کاری را ساده می‌کند.</p><p>نام و نشان ما از انار گرفته شده؛ میوه‌ای که دانه‌های فراوانش در یک پوست کنار هم جمع‌اند، مثل دسته‌بندی منظم محصولات ما.</p>`],
+ shipping:['ارسال و هزینه‌ها',`<ul><li><b>پست پیشتاز:</b> سراسر کشور، ۳ تا ۵ روز کاری، ${T(SHIPS.post.fee)} (رایگان بالای ${T(FREE_SHIP)}).</li><li><b>پیک موتوری:</b> فقط تهران، تحویل امروز یا فردا، ${T(SHIPS.courier.fee)}.</li><li><b>تحویل حضوری:</b> رایگان، با هماهنگی قبلی.</li></ul><p>سفارش‌های ثبت‌شده تا ساعت ۱۴ همان روز پردازش می‌شوند.</p>`],
+ returns:['شرایط بازگشت کالا',`<ul><li>تا ۷ روز پس از تحویل می‌توانید کالای استفاده‌نشده و دارای بستهٔ اصلی را بازگردانید.</li><li>در صورت معیوب بودن یا مغایرت کالا، هزینهٔ بازگشت بر عهدهٔ فروشگاه است.</li><li>مبلغ پس از بررسی کالا، ظرف ۳ تا ۵ روز کاری به حساب شما برمی‌گردد.</li></ul>`],
+ faq:['پرسش‌های متداول',`<p><b>چطور سفارشم را پیگیری کنم؟</b><br>از منوی «پیگیری سفارش» با کد پیگیری.</p><p><b>پرداخت امن است؟</b><br>در نسخهٔ نهایی، پرداخت از طریق درگاه بانکی معتبر انجام می‌شود. درگاه فعلی آزمایشی است.</p><p><b>کد تخفیف دارم، کجا وارد کنم؟</b><br>در صفحهٔ سبد خرید.</p>`],
+ contact:['تماس با ما',`<p>تلفن: <b>${SITE.phone}</b><br>ایمیل: <b dir="ltr">${SITE.email}</b><br>نشانی: ${SITE.addr}<br>ساعت پاسخ‌گویی: ${SITE.hours}</p>
+  <form id="ct" novalidate><label for="c1">نام</label><input id="c1" name="n"><label for="c2">پیام شما</label><textarea id="c2" name="m" rows="4"></textarea><div class="err" id="cte"></div><button class="btn" style="margin-top:8px">ارسال پیام</button></form>`]
+};
+function page(k){const p=PAGES[k];if(!p)return notfound();app.innerHTML=`<div class="crumb"><a href="#/">خانه</a> › ${p[0]}</div><div class="pg"><h1>${p[0]}</h1>${p[1]}</div>`}
+function layout(){
+  $('#strip').textContent=`ارسال رایگان پست برای خرید بالای ${T(FREE_SHIP)}`;
+  $('#lg').innerHTML=`${MARK(42)}<span><b>${SITE.name}</b><small>فروشگاه لوازم تحریر</small></span>`;
+  const I={h:'<path d="M4 11l8-7 8 7v9H4z"/>',s:'<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',c:'<path d="M5 8h14l-1 12H6zM9 8a3 3 0 016 0"/>',o:'<path d="M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8"/>'};
+  $('#tabs').innerHTML=`<a href="#/" data-t="">${TAB(I.h)}خانه</a><a href="#/shop" data-t="shop">${TAB(I.s)}فروشگاه</a><a href="#/cart" data-t="cart"><i>${TAB(I.c)}<b class="bd">۰</b></i>سبد خرید</a><a href="#/orders" data-t="orders">${TAB(I.o)}سفارش‌ها</a>`;
+  $('#ft').innerHTML=`<div class="wrap"><div class="fg"><div><div style="display:flex;gap:10px;align-items:center">${MARK(40,'#D9B25F')}<h4 style="margin:0;font-size:1.6rem">${SITE.name}</h4></div><p style="margin-top:8px;max-width:340px">فروشگاه آنلاین لوازم تحریر؛ کیفیت، قیمت شفاف و ارسال مطمئن.</p></div>
+  <div><h4>راهنمای خرید</h4><a href="#/page/shipping">ارسال و هزینه‌ها</a><a href="#/page/returns">شرایط بازگشت کالا</a><a href="#/page/faq">پرسش‌های متداول</a><a href="#/orders">پیگیری سفارش</a></div>
+  <div><h4>ارتباط با ما</h4><a href="#/page/about">دربارهٔ ما</a><a href="#/page/contact">تماس با ما</a><span>${SITE.phone}</span></div></div>
+  <div class="cp">© ${SITE.name} — همهٔ حقوق محفوظ است. نسخهٔ آزمایشی: درگاه پرداخت و ارسال شبیه‌سازی شده‌اند.</div></div>`;
+  commit();
+}
 function notfound(){app.innerHTML=`<div class="empty"><h2 style="justify-content:center">صفحه پیدا نشد</h2><a class="btn" href="#/">بازگشت به خانه</a></div>`}
 
 function route(){
   clearInterval(timer);
   const [path,qs]=(location.hash.slice(1)||'/').split('?'),[,pg,arg]=path.split('/');
-  const m={'':home,shop:()=>shop(qs),product:()=>product(arg),cart:cartView,checkout,success:()=>success(arg),orders:ordersView,pay:()=>gateway(arg),failed:()=>failed(arg)};
+  const m={'':home,shop:()=>shop(qs),product:()=>product(arg),cart:cartView,checkout,success:()=>success(arg),orders:ordersView,pay:()=>gateway(arg),page:()=>page(arg),failed:()=>failed(arg)};
   (m[pg||'']||notfound)();window.scrollTo(0,0);
   document.querySelectorAll('[data-t]').forEach(a=>a.classList.toggle('on',a.dataset.t===(pg||'')||(pg==='product'&&a.dataset.t==='shop')));
 }
@@ -199,7 +223,7 @@ document.addEventListener('click',e=>{
   if(b=g('[data-add]')){e.preventDefault();add(b.dataset.add)}
   else if(b=g('[data-addn]'))add(b.dataset.addn,qn());
   else if(b=g('[data-buy]')){if(add(b.dataset.buy,qn()))location.hash='#/cart'}
-  else if(b=g('[data-d]')){const n=$('#n'),v=Math.max(1,(+n.dataset.v||1)+ +b.dataset.d);n.dataset.v=v;n.textContent=fa(v)}
+  else if(b=g('[data-d]')){const n=$('#n'),mx=stock(+$('[data-addn]').dataset.addn),v=Math.min(Math.max(mx,1),Math.max(1,(+n.dataset.v||1)+ +b.dataset.d));n.dataset.v=v;n.textContent=fa(v)}
   else if(b=g('[data-inc]')){add(b.dataset.inc)&&cartView()}
   else if(b=g('[data-dec]')){const i=b.dataset.dec;if(--cart[i]<=0)delete cart[i];commit();cartView()}
   else if(b=g('[data-del]')){delete cart[b.dataset.del];commit();cartView()}
@@ -220,6 +244,8 @@ document.addEventListener('submit',e=>{
   const f=e.target;
   if(f.id==='co'){e.preventDefault();place(f)}
   else if(f.id==='gwf'){e.preventDefault();payForm(f)}
-  else if(f.id==='hs'){e.preventDefault();const q=f.querySelector('input').value;F.q=q;F.cat=-1;location.hash='#/shop?q='+encodeURIComponent(q);if(location.hash.startsWith('#/shop'))route()}
+  else if(f.id==='hs'){e.preventDefault();const q=f.querySelector('input').value;F.q=q;F.cat=-1;const h='#/shop?q='+encodeURIComponent(q);if(location.hash===h)route();else location.hash=h;f.querySelector('input').blur()}
 });
-window.addEventListener('hashchange',route);commit();route();
+document.addEventListener('submit',e=>{if(e.target.id==='ct'){e.preventDefault();const f=e.target;if(f.m.value.trim().length<5){$('#cte').textContent='پیام را کامل‌تر بنویسید';return}
+  const m=load('msgs',[]);m.push({n:f.n.value,m:f.m.value,d:Date.now()});save('msgs',m);f.reset();$('#cte').textContent='';toast('پیام شما ثبت شد')}});
+window.addEventListener('hashchange',route);layout();route();
