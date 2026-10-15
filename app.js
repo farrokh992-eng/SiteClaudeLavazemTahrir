@@ -3,8 +3,7 @@ const fa = n => Number(n).toLocaleString('fa-IR');
 const T = n => fa(n) + ' تومان';
 const en = s => String(s).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
 const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch { return d } };
-const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true } catch { toast('فضای ذخیره‌سازی مرورگر در دسترس نیست'); return false } };
-const esc = v => String(v ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+const save = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 let cart = load('cart', {}), coupon = load('coupon', null), orders = load('orders', []), stockMap = load('stock', {});
 let F = {q: '', cat: -1, sort: 'pop', max: 0}, timer = null, shipSel = load('ship', 'post');
 const COUPONS = {NOTE20: ['۲۰٪ تخفیف', .2], WELCOME10: ['۱۰٪ تخفیف', .1]};
@@ -15,13 +14,8 @@ const SHIPS = {
   pickup: {name: 'تحویل حضوری', fee: 0, days: [0, 0], note: 'از فروشگاه — تهران، خیابان انقلاب (با هماهنگی)'}
 };
 const PROV = 'تهران,البرز,اصفهان,خراسان رضوی,فارس,آذربایجان شرقی,آذربایجان غربی,خوزستان,مازندران,گیلان,کرمان,قم,یزد,هرمزگان,کرمانشاه,همدان,مرکزی,زنجان,قزوین,لرستان,اردبیل,گلستان,سیستان و بلوچستان,کردستان,بوشهر,سمنان,ایلام,چهارمحال و بختیاری,خراسان شمالی,خراسان جنوبی,کهگیلویه و بویراحمد'.split(',');
-const SITE={name:'نارون',english:'Elm',phone:'',email:'',addr:'',hours:'شنبه تا پنجشنبه، ۹ تا ۱۸'};
-const PREFKEY='narvan_prefs';
-let prefs=load(PREFKEY,{compact:false,motion:true,confirmClear:true});
-function applyPrefs(){document.body.classList.toggle('density-compact',!!prefs.compact);document.body.classList.toggle('motion-off',!prefs.motion)}
-function settingsView(){app.innerHTML=`<div class="crumb"><a href="#/">خانه</a> › تنظیمات</div><section class="pg"><h1>تنظیمات نارون</h1><p class="meta">ظاهر و رفتار فروشگاه را مطابق سلیقه‌ات تنظیم کن. این گزینه‌ها فقط روی همین مرورگر ذخیره می‌شوند.</p><div class="settings-grid"><label class="setting"><span><b>چیدمان جمع‌وجور</b><small>فاصله‌ها و کارت‌ها کوچک‌تر می‌شوند.</small></span><input id="prefCompact" type="checkbox" ${prefs.compact?'checked':''}></label><label class="setting"><span><b>انیمیشن‌ها</b><small>حرکت‌های ظریف ورود و تعامل.</small></span><input id="prefMotion" type="checkbox" ${prefs.motion?'checked':''}></label></div><h2>حریم خصوصی و امنیت</h2><div class="notice">اطلاعات سفارش و سبد خرید در حافظهٔ همین مرورگر ذخیره می‌شود؛ پاک‌کردن داده‌های سایت ممکن است آن‌ها را حذف کند. در این نسخه هیچ سرور یا درگاه بانکی واقعی متصل نیست.</div><div class="settings-grid"><div class="setting"><span><b>پاک‌سازی سبد خرید</b><small>فقط اقلام فعلی سبد حذف می‌شوند.</small></span><button class="btn sm alt" id="clearCart">پاک‌سازی</button></div><div class="setting"><span><b>پاک‌سازی اطلاعات محلی</b><small>سبد، علاقه‌مندی‌ها و اطلاعات ذخیره‌شدهٔ این سایت حذف می‌شوند.</small></span><button class="btn sm alt" id="clearLocal">پاک‌سازی داده‌ها</button></div></div><h2>دربارهٔ نارون</h2><p>نارون (Elm)؛ فروشگاه لوازم تحریر و نوشت‌افزار با هویت بصری الهام‌گرفته از رنگ سبز و درخت نارون.</p></section>`;}
-
-const MARK=(s=40,cr='#8A0F22')=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 17c6-5 13-3 14 3-5 4-11 4-14-3z" fill="#3F8F63"/><path d="M32 19c-14 0-22 9-22 20s9 19 22 19 22-8 22-19-8-20-22-20z" fill="#A3152B"/><path d="M32 19c-14 0-22 9-22 20 0 3 1 6 3 9 4-14 18-24 34-24-4-3-9-5-15-5z" fill="#D8435A" opacity=".5"/><path d="M24 21L23 10l6 6 3-9 3 9 6-6-1 11z" fill="${cr}"/><circle cx="26" cy="38" r="2.3" fill="#F4B6C0"/><circle cx="33" cy="45" r="2.3" fill="#F4B6C0"/><circle cx="41" cy="37" r="2.3" fill="#F4B6C0"/><circle cx="35" cy="33" r="2" fill="#F4B6C0" opacity=".7"/></svg>`;
+const SITE={name:'ناروَن',phone:'۰۲۱-۰۰۰۰۰۰۰۰',email:'info@naroon.example',addr:'تهران، خیابان نمونه، پلاک ۰ (آدرس واقعی را در app.js تنظیم کنید)',hours:'شنبه تا پنجشنبه، ۹ تا ۱۸'};
+const MARK=(s=40,cr='#23734D')=>`<svg width="${s}" height="${s}" viewBox="0 0 100 100" aria-hidden="true" fill="none"><path d="M50 87V42M50 61L29 43M50 52L72 31M50 73L72 57" stroke="#75543A" stroke-width="7" stroke-linecap="round"/><path d="M49 45C22 47 12 29 17 13c22-1 35 10 32 32Z" fill="#23734D"/><path d="M53 37C50 15 67 5 87 9c3 21-11 32-34 28Z" fill="#3E9B68"/><path d="M31 49C10 52 5 68 17 82c18-4 25-17 14-33Z" fill="#2F8055"/><path d="M59 63C62 43 82 39 94 51c-5 19-19 24-35 12Z" fill="#69B77F"/><path d="M38 86h24" stroke="#75543A" stroke-width="6" stroke-linecap="round"/></svg>`;
 const TAB=(p)=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 const P = id => PRODUCTS.find(p => p.id === +id);
 const stock = id => stockMap[id] ?? P(id).stock;
@@ -49,7 +43,7 @@ function home(){
   app.innerHTML=`<section class="hero"><div><h1>لوازم تحریر برگزیده برای کار و درس هر روز</h1>
   <p>دفتر، قلم، رنگ و لوازم اداری با ضمانت اصالت کالا و ارسال به سراسر کشور.</p>
   <div class="hb"><a class="btn gold" href="#/shop">مشاهدهٔ محصولات</a><a class="btn ghost" href="#/shop?cat=0">دفترها و کاغذ</a></div></div><div class="hm">${MARK(230,'#D9B25F')}</div></section>
-  <div class="trust"><div><b>ارسال به سراسر کشور</b>پست پیشتاز و پیک تهران</div><div><b>پرداخت امن</b>آنلاین یا در محل تحویل</div><div><b>ضمانت بازگشت</b>تا ۷ روز پس از تحویل</div><div><b>پشتیبانی</b>${SITE.hours}</div></div>
+  <div class="trust"><div><b>ارسال به سراسر کشور</b>پست پیشتاز و پیک تهران</div><div><b>روش پرداخت</b>پرداخت آزمایشی؛ درگاه واقعی هنوز فعال نیست</div><div><b>ضمانت بازگشت</b>تا ۷ روز پس از تحویل</div><div><b>پشتیبانی</b>${SITE.hours}</div></div>
   <h2 class="sh">دسته‌بندی‌ها</h2><div class="cats">${CATS.map((c,i)=>`<a class="cat" href="#/shop?cat=${i}">${c}</a>`).join('')}</div>
   <h2 class="sh">پرفروش‌ترین‌ها <a href="#/shop">همهٔ محصولات</a></h2><div class="grid">${top.map(card).join('')}</div>
   ${sale.length?`<h2 class="sh">پیشنهاد ویژه</h2><div class="grid">${sale.map(card).join('')}</div>`:''}`;
@@ -115,21 +109,21 @@ function checkout(){
   if(!Object.keys(cart).length){location.hash='#/cart';return}
   const u=load('user',{prov:'تهران'});
   app.innerHTML=`${steps(2)}<div class="lay"><form id="co" novalidate><div class="box"><h2 style="margin-top:0">اطلاعات گیرنده</h2>
-  <div class="two"><div><label for="f1">نام و نام خانوادگی</label><input id="f1" name="name" autocomplete="name" value="${esc(u.name||'')}"><div class="err"></div></div>
-  <div><label for="f2">شمارهٔ موبایل</label><input id="f2" name="phone" dir="ltr" inputmode="numeric" placeholder="09123456789" autocomplete="tel" value="${esc(u.phone||'')}"><div class="err"></div></div>
+  <div class="two"><div><label for="f1">نام و نام خانوادگی</label><input id="f1" name="name" autocomplete="name" value="${u.name||''}"><div class="err"></div></div>
+  <div><label for="f2">شمارهٔ موبایل</label><input id="f2" name="phone" dir="ltr" inputmode="numeric" placeholder="09123456789" autocomplete="tel" value="${u.phone||''}"><div class="err"></div></div>
   <div><label for="f3">استان</label><select id="f3" name="prov">${PROV.map(x=>`<option ${x===u.prov?'selected':''}>${x}</option>`).join('')}</select><div class="err"></div></div>
-  <div><label for="f4">شهر</label><input id="f4" name="city" autocomplete="address-level2" value="${esc(u.city||'')}"><div class="err"></div></div>
-  <div><label for="f5">کد پستی (۱۰ رقم)</label><input id="f5" name="zip" dir="ltr" inputmode="numeric" maxlength="10" value="${esc(u.zip||'')}"><div class="err"></div></div>
-  <div><label for="f6">پلاک / واحد (اختیاری)</label><input id="f6" name="unit" value="${esc(u.unit||'')}"><div class="err"></div></div></div>
-  <label for="f7">نشانی کامل (خیابان، کوچه)</label><textarea id="f7" name="addr" rows="3" autocomplete="street-address">${esc(u.addr||'')}</textarea><div class="err"></div></div>
+  <div><label for="f4">شهر</label><input id="f4" name="city" autocomplete="address-level2" value="${u.city||''}"><div class="err"></div></div>
+  <div><label for="f5">کد پستی (۱۰ رقم)</label><input id="f5" name="zip" dir="ltr" inputmode="numeric" maxlength="10" value="${u.zip||''}"><div class="err"></div></div>
+  <div><label for="f6">پلاک / واحد (اختیاری)</label><input id="f6" name="unit" value="${u.unit||''}"><div class="err"></div></div></div>
+  <label for="f7">نشانی کامل (خیابان، کوچه)</label><textarea id="f7" name="addr" rows="3" autocomplete="street-address">${u.addr||''}</textarea><div class="err"></div></div>
   <div class="box"><h2 style="margin-top:0">روش ارسال</h2><div id="so">${shipOpts(u.prov)}</div></div>
   <div class="box"><h2 style="margin-top:0">روش پرداخت</h2>
-  <label class="opt"><input type="radio" name="pay" value="online" checked><span>پرداخت آنلاین (درگاه آزمایشی)<small>پرداخت با کارت بانکی، بدون هزینهٔ اضافه</small></span></label>
+  <label class="opt"><input type="radio" name="pay" value="transfer" checked><span>کارت‌به‌کارت / انتقال بانکی<small>ثبت سفارش، انتقال وجه و ارسال شماره پیگیری؛ تأیید نهایی دستی است.</small></span></label>
   <label class="opt"><input type="radio" name="pay" value="cod"><span>پرداخت در محل<small>هنگام تحویل کالا</small></span></label></div>
   <label class="opt"><input type="checkbox" name="terms"><span>قوانین خرید و شرایط بازگشت کالا را می‌پذیرم.<small><a href="#/page/returns" style="color:var(--g2)">مطالعهٔ شرایط بازگشت</a></small></span></label><div class="err"></div><button class="btn big go">ثبت سفارش و ادامه</button></form>
   <div class="box sum" style="position:sticky;top:84px"><h2 style="margin-top:0">خلاصهٔ سفارش</h2><div id="sm">${sumHTML()}</div></div></div>`;
 }
-function place(form){
+async function place(form){
   const d=Object.fromEntries(new FormData(form)),errs=[...form.querySelectorAll('.err')];let bad=0;
   d.phone=en(d.phone).trim();d.zip=en(d.zip).trim();
   const R=[['name',v=>v.trim().split(/\s+/).length>=2&&v.trim().length>=5||'نام و نام خانوادگی را کامل بنویسید'],['phone',v=>/^09\d{9}$/.test(v)||'شماره باید مثل 09123456789 باشد'],
@@ -140,29 +134,30 @@ function place(form){
   const lack=Object.keys(cart).find(id=>cart[id]>stock(id));if(lack){toast(`موجودی «${P(lack).name}» کافی نیست`);return}
   if(SHIPS[d.ship].only&&d.prov!==SHIPS[d.ship].only){toast('این روش ارسال برای استان شما فعال نیست');return}
   shipSel=d.ship;save('ship',d.ship);save('user',d);
-  const t=totals(d.ship),code='KH-'+Math.random().toString(36).slice(2,8).toUpperCase();
-  const o={code,date:Date.now(),items:Object.entries(cart).map(([id,q])=>({id:+id,q})),t,pay:d.pay,ship:d.ship,state:d.pay==='cod'?'cod':'pending',addr:`${d.prov}، ${d.city}، ${d.addr}${d.unit?'، '+d.unit:''}`,name:d.name,phone:d.phone,zip:d.zip};
-  orders.unshift(o);save('orders',orders);
+  const t=totals(d.ship);let code='';
+  const o={date:Date.now(),items:Object.entries(cart).map(([id,q])=>({id:+id,q})),t,pay:d.pay,ship:d.ship,state:d.pay==='cod'?'cod':'pending',addr:`${d.prov}، ${d.city}، ${d.addr}${d.unit?'، '+d.unit:''}`,name:d.name,phone:d.phone,zip:d.zip};
+  try {
+    const remote=await window.NarvanAPI.createOrder({customer_name:d.name,customer_phone:d.phone,province:d.prov,city:d.city,postal_code:d.zip,address:`${d.addr}${d.unit?'، '+d.unit:''}`,items:o.items.map(i=>({id:i.id,name:P(i.id).name,quantity:i.q})),subtotal:t.base,shipping_amount:t.ship,shipping_method:d.ship,coupon_code:coupon||'',total_amount:t.total,payment_method:d.pay==='cod'?'cod':'bank_transfer'});
+    code=remote.order.order_code;
+  } catch(err) { toast(err.message||'ثبت سفارش در سرور ناموفق بود'); return; }
+  o.code=code;o.remoteId=true;orders.unshift(o);save('orders',orders);
   if(d.pay==='cod'){finish(o)}else location.hash='#/pay/'+code;
 }
 function finish(o){
   o.items.forEach(i=>{stockMap[i.id]=stock(i.id)-i.q});save('stock',stockMap);
   cart={};coupon=null;save('coupon',null);commit();save('orders',orders);location.hash='#/success/'+o.code;
 }
-function gateway(code){
+async function gateway(code){
   const o=orders.find(x=>x.code===code);if(!o||o.state==='paid')return notfound();
-  let left=600;
-  app.innerHTML=`<div class="gw"><div class="hd"><span>درگاه پرداخت آزمایشی</span><span id="tm" dir="ltr">۱۰:۰۰</span></div>
-  <div class="test">حالت تست: هیچ پولی برداشت نمی‌شود. اطلاعات کارت به‌صورت نمونه پر شده است.</div>
-  <form class="bd2" id="gwf" novalidate><div class="amt"><span>پذیرنده: فروشگاه خط‌کش</span><b>${T(o.t.total)}</b></div>
-  <label>شمارهٔ کارت</label><input name="card" class="ltr" inputmode="numeric" maxlength="19" value="6037 9911 1111 1111"><div class="err"></div>
-  <div class="two"><div><label>CVV2</label><input name="cvv" class="ltr" inputmode="numeric" maxlength="4" value="123"><div class="err"></div></div>
-  <div><label>تاریخ انقضا</label><input name="exp" class="ltr" placeholder="MM/YY" maxlength="5" value="12/30"><div class="err"></div></div></div>
-  <label>رمز دوم (آزمایشی: ۱۲۳۴۵۶)</label><input name="pin" class="ltr" type="password" inputmode="numeric" maxlength="8" value="123456"><div class="err"></div>
-  <div class="acts"><button class="btn go" data-code="${code}">پرداخت</button><button type="button" class="btn alt" data-cancelpay="${code}">انصراف</button></div>
-  <p class="meta" style="margin-top:12px">برای تست پرداخت ناموفق، شمارهٔ کارت را به 0000 ختم کنید یا «انصراف» را بزنید.</p></form></div>`;
-  timer=setInterval(()=>{left--;const m=String(Math.floor(left/60)).padStart(2,'0'),s=String(left%60).padStart(2,'0');const el=$('#tm');if(el)el.textContent=fa(m+':'+s);if(left<=0)payResult(code,false,'زمان پرداخت به پایان رسید.')},1000);
+  let settings={payment_iban:'IR980180000000377811342397',payment_holder:'',payment_note:'پس از انتقال وجه، شماره پیگیری را ثبت کنید.'};
+  try{settings=await window.NarvanAPI.paymentSettings()}catch(e){toast(e.message||'تنظیمات دریافت نشد')}
+  app.innerHTML=`<div class="gw"><div class="hd"><span>پرداخت با انتقال بانکی</span><span>ثبت دستی</span></div>
+  <div class="test">این صفحه درگاه بانکی نیست. ابتدا وجه را در اپ بانک خود انتقال دهید؛ سپس شماره پیگیری را وارد کنید. سفارش تا بررسی گردش حساب توسط مدیر در انتظار می‌ماند.</div>
+  <div class="bd2"><div class="amt"><span>مبلغ سفارش</span><b>${T(o.t.total)}</b></div><div class="box"><p>شماره شبا</p><b dir="ltr" style="font-size:1.05rem;overflow-wrap:anywhere">${settings.payment_iban||'شماره شبا تنظیم نشده است'}</b><button class="btn alt" id="copy-iban" type="button">کپی شماره شبا</button>${settings.payment_holder?`<p>به نام: ${settings.payment_holder}</p>`:''}<p class="meta">${settings.payment_note||''}</p></div>
+  <form id="transferForm"><label for="transferRef">شماره پیگیری / کد مرجع انتقال</label><input id="transferRef" name="transfer_reference" required minlength="5" maxlength="80" autocomplete="off" placeholder="شماره پیگیری درج‌شده در رسید"><div class="err"></div><button class="btn go">ثبت شماره پیگیری</button><a class="btn alt" href="#/orders">بعداً انجام می‌دهم</a></form></div></div>`;
+  $('#copy-iban')?.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(settings.payment_iban);toast('شماره شبا کپی شد')}catch{toast('کپی خودکار ممکن نیست؛ شماره را انتخاب کنید')}});
 }
+async function submitTransfer(form){const d=Object.fromEntries(new FormData(form)),code=location.hash.split('/').pop(),err=form.querySelector('.err');const ref=String(d.transfer_reference||'').trim();if(ref.length<5){err.textContent='شماره پیگیری را کامل وارد کنید';return}err.textContent='';const b=form.querySelector('button');b.disabled=true;b.textContent='در حال ثبت…';try{await window.NarvanAPI.submitTransfer({order_code:code,transfer_reference:ref});const o=orders.find(x=>x.code===code);if(o){o.state='payment_submitted';o.transfer_reference=ref;save('orders',orders)}app.innerHTML=`<div class="box empty"><div class="seal">✓</div><h2 style="justify-content:center">شماره پیگیری ثبت شد</h2><p>کد سفارش: <b dir="ltr">${code}</b></p><p>سفارش تا بررسی و تأیید مدیر در وضعیت «در انتظار تأیید پرداخت» باقی می‌ماند.</p><a class="btn" href="#/orders">پیگیری سفارش</a></div>`}catch(e){err.textContent=e.message||'ثبت شماره پیگیری ناموفق بود';b.disabled=false;b.textContent='ثبت شماره پیگیری'}}
 function payResult(code,ok,msg){
   clearInterval(timer);const o=orders.find(x=>x.code===code);if(!o)return;
   if(ok){o.state='paid';o.ref=String(Math.floor(1e11+Math.random()*9e11));finish(o)}else{o.state='failed';save('orders',orders);sessionStorage.setItem('fail',msg||'پرداخت انجام نشد.');location.hash='#/failed/'+code}
@@ -207,19 +202,33 @@ function layout(){
   $('#strip').textContent=`ارسال رایگان پست برای خرید بالای ${T(FREE_SHIP)}`;
   $('#lg').innerHTML=`${MARK(42)}<span><b>${SITE.name}</b><small>فروشگاه لوازم تحریر</small></span>`;
   const I={h:'<path d="M4 11l8-7 8 7v9H4z"/>',s:'<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>',c:'<path d="M5 8h14l-1 12H6zM9 8a3 3 0 016 0"/>',o:'<path d="M4 8l8-4 8 4v8l-8 4-8-4zM4 8l8 4 8-4M12 12v8"/>'};
-  $('#tabs').innerHTML=`<a href="#/" data-t="">${TAB(I.h)}خانه</a><a href="#/shop" data-t="shop">${TAB(I.s)}فروشگاه</a><a href="#/cart" data-t="cart"><i>${TAB(I.c)}<b class="bd">۰</b></i>سبد خرید</a><a href="#/settings" data-t="settings">⚙ تنظیمات</a>`;
+  $('#tabs').innerHTML=`<a href="#/" data-t="">${TAB(I.h)}خانه</a><a href="#/shop" data-t="shop">${TAB(I.s)}فروشگاه</a><a href="#/cart" data-t="cart"><i>${TAB(I.c)}<b class="bd">۰</b></i>سبد خرید</a><a href="#/orders" data-t="orders">${TAB(I.o)}سفارش‌ها</a>`;
   $('#ft').innerHTML=`<div class="wrap"><div class="fg"><div><div style="display:flex;gap:10px;align-items:center">${MARK(40,'#D9B25F')}<h4 style="margin:0;font-size:1.6rem">${SITE.name}</h4></div><p style="margin-top:8px;max-width:340px">فروشگاه آنلاین لوازم تحریر؛ کیفیت، قیمت شفاف و ارسال مطمئن.</p></div>
-  <div><h4>راهنمای خرید</h4><a href="#/page/shipping">ارسال و هزینه‌ها</a><a href="#/page/returns">شرایط بازگشت کالا</a><a href="#/page/faq">پرسش‌های متداول</a><a href="#/orders">پیگیری سفارش</a></div>
+  <div><h4>راهنمای خرید</h4><a href="#/page/shipping">ارسال و هزینه‌ها</a><a href="#/page/returns">شرایط بازگشت کالا</a><a href="#/page/faq">پرسش‌های متداول</a><a href="#/orders">پیگیری سفارش</a><a href="#/settings">تنظیمات</a></div>
   <div><h4>ارتباط با ما</h4><a href="#/page/about">دربارهٔ ما</a><a href="#/page/contact">تماس با ما</a><span>${SITE.phone}</span></div></div>
-  <div class="cp">© ${SITE.name} — همهٔ حقوق محفوظ است. نسخهٔ آزمایشی: درگاه پرداخت و ارسال شبیه‌سازی شده‌اند.</div></div>`;
+  <div class="cp">© ${SITE.name} — همهٔ حقوق محفوظ است. پرداخت کارت‌به‌کارت نیازمند بررسی و تأیید مدیر است.</div></div>`;
   commit();
 }
+
+function settingsView(){
+ const pref=load('narvan-prefs',{compact:false,reduceMotion:false,theme:'light'});
+ app.innerHTML=`<section class="page"><h1>تنظیمات</h1><p>ظاهر و تجربهٔ استفاده از فروشگاه را مطابق نیازتان تنظیم کنید. این گزینه‌ها فقط روی همین مرورگر ذخیره می‌شوند.</p>
+ <div class="settings-grid">
+ <div class="setting-card"><h3>ظاهر سایت</h3><label for="pref-theme">پوسته</label><select id="pref-theme"><option value="light" ${pref.theme==='light'?'selected':''}>روشن</option><option value="dark" ${pref.theme==='dark'?'selected':''}>تیره</option><option value="system" ${pref.theme==='system'?'selected':''}>مطابق دستگاه</option></select></div>
+ <div class="setting-card"><h3>چیدمان</h3><label><input id="pref-compact" type="checkbox" ${pref.compact?'checked':''}> چیدمان جمع‌وجور</label></div>
+ <div class="setting-card"><h3>حرکت و انیمیشن</h3><label><input id="pref-motion" type="checkbox" ${pref.reduceMotion?'checked':''}> کاهش انیمیشن‌ها</label><small>برای راحتی بیشتر و دستگاه‌های ضعیف‌تر.</small></div>
+ </div>
+ <div class="settings-actions"><button class="btn" id="save-prefs">ذخیره تنظیمات</button><button class="btn ghost" id="reset-prefs">بازگردانی پیش‌فرض</button></div>
+ <h2>حریم خصوصی و امنیت</h2><p>اطلاعات سبد و سفارش‌های آزمایشی فعلاً در حافظهٔ مرورگر ذخیره می‌شوند؛ روی دستگاه مشترک، اطلاعات حساس وارد نکنید. پنل مدیریت و پرداخت واقعی عمداً در این نسخهٔ استاتیک فعال نشده‌اند، چون رمز یا کلید محرمانه داخل کد فرانت‌اند قابل مشاهده است.</p></section>`;
+}
+function applyPrefs(p){document.body.classList.toggle('compact',!!p.compact);document.body.classList.toggle('reduce-motion',!!p.reduceMotion);document.documentElement.dataset.theme=p.theme||'light';}
+
 function notfound(){app.innerHTML=`<div class="empty"><h2 style="justify-content:center">صفحه پیدا نشد</h2><a class="btn" href="#/">بازگشت به خانه</a></div>`}
 
 function route(){
   clearInterval(timer);
   const [path,qs]=(location.hash.slice(1)||'/').split('?'),[,pg,arg]=path.split('/');
-  const m={'':home,settings:settingsView,shop:()=>shop(qs),product:()=>product(arg),cart:cartView,checkout,success:()=>success(arg),orders:ordersView,pay:()=>gateway(arg),page:()=>page(arg),failed:()=>failed(arg)};
+  const m={'':home,shop:()=>shop(qs),product:()=>product(arg),cart:cartView,checkout,success:()=>success(arg),orders:ordersView,pay:()=>gateway(arg),page:()=>page(arg),settings:settingsView,failed:()=>failed(arg)};
   (m[pg||'']||notfound)();window.scrollTo(0,0);
   document.querySelectorAll('[data-t]').forEach(a=>a.classList.toggle('on',a.dataset.t===(pg||'')||(pg==='product'&&a.dataset.t==='shop')));
 }
@@ -250,10 +259,17 @@ document.addEventListener('submit',e=>{
   const f=e.target;
   if(f.id==='co'){e.preventDefault();place(f)}
   else if(f.id==='gwf'){e.preventDefault();payForm(f)}
+  else if(f.id==='transferForm'){e.preventDefault();submitTransfer(f)}
   else if(f.id==='hs'){e.preventDefault();const q=f.querySelector('input').value;F.q=q;F.cat=-1;const h='#/shop?q='+encodeURIComponent(q);if(location.hash===h)route();else location.hash=h;f.querySelector('input').blur()}
 });
 document.addEventListener('submit',e=>{if(e.target.id==='ct'){e.preventDefault();const f=e.target;if(f.m.value.trim().length<5){$('#cte').textContent='پیام را کامل‌تر بنویسید';return}
   const m=load('msgs',[]);m.push({n:f.n.value,m:f.m.value,d:Date.now()});save('msgs',m);f.reset();$('#cte').textContent='';toast('پیام شما ثبت شد')}});
-document.addEventListener('change',e=>{if(e.target.id==='prefCompact'){prefs.compact=e.target.checked;save(PREFKEY,prefs);applyPrefs()}if(e.target.id==='prefMotion'){prefs.motion=e.target.checked;save(PREFKEY,prefs);applyPrefs()}});
-document.addEventListener('click',e=>{if(e.target.id==='clearCart'){cart={};commit();toast('سبد خرید پاک شد');settingsView()}if(e.target.id==='clearLocal'){if(confirm('همهٔ داده‌های محلی نارون در این مرورگر حذف شود؟')){['cart','coupon','orders','stock','user','ship','msgs',PREFKEY].forEach(k=>localStorage.removeItem(k));cart={};coupon=null;orders=[];stockMap={};prefs={compact:false,motion:true,confirmClear:true};applyPrefs();commit();toast('داده‌های محلی پاک شد');settingsView()}}});
-window.addEventListener('hashchange',route);layout();applyPrefs();route();
+document.addEventListener('click',e=>{
+ if(e.target.closest('#save-prefs')){
+  const p={theme:$('#pref-theme')?.value||'light',compact:!!$('#pref-compact')?.checked,reduceMotion:!!$('#pref-motion')?.checked};
+  save('narvan-prefs',p);applyPrefs(p);toast('تنظیمات ذخیره شد');
+ }
+ if(e.target.closest('#reset-prefs')){const p={theme:'light',compact:false,reduceMotion:false};save('narvan-prefs',p);applyPrefs(p);settingsView();toast('تنظیمات بازنشانی شد');}
+});
+applyPrefs(load('narvan-prefs',{theme:'light',compact:false,reduceMotion:false}));
+window.addEventListener('hashchange',route);layout();route();
